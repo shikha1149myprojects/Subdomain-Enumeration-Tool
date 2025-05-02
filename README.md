@@ -16,7 +16,10 @@ This tool performs automated security analysis on discovered subdomains of a tar
 
 ```
 # Clone Repository
-git clone 
+git clone https://github.com/shikha1149myprojects/Subdomain-Enumeration-Tool.git
+
+# Move into directory
+cd subdomain_enumerator
 
 # Install subfinder
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
