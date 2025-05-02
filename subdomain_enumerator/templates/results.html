@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subdomain Dashboard - {{ domain }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+        .section {
+            background: #fff;
+            padding: 25px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+        }
+        h2 {
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f6f9;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fbfc;
+        }
+        details summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 10px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .risk-low { color: green; font-weight: bold; }
+        .risk-medium { color: orange; font-weight: bold; }
+        .risk-high { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Dashboard for <em>{{ domain }}</em></h1>
+
+    <div class="section">
+        <h2>🧭 Subdomain Enumeration</h2>
+        {% if subdomains %}
+            <ul>
+                {% for sub in subdomains[:5] %}
+                    <li>{{ sub }}</li>
+                {% endfor %}
+            </ul>
+            {% if subdomains|length > 5 %}
+                <details>
+                    <summary>Show more...</summary>
+                    <ul>
+                        {% for sub in subdomains[5:] %}
+                            <li>{{ sub }}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+            {% endif %}
+        {% else %}
+            <p>No subdomains found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>🌐 Resolved Subdomains (IP Addresses)</h2>
+        {% if resolved_subs %}
+            <ul>
+                {% for res in resolved_subs %}
+                    <li>{{ res }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No resolved subdomains found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>🛡️ WAF/CDN Detection</h2>
+        {% if waf_results %}
+            <table>
+                <tr><th>Subdomain</th><th>WAF/CDN Detected</th></tr>
+                {% for sub, waf in waf_results.items() %}
+                    <tr>
+                        <td>{{ sub }}</td>
+                        <td>{{ waf }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No WAF/CDN protection detected.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>📊 HTTP/HTTPS Status Codes</h2>
+        {% if http_statuses %}
+            <table>
+                <tr><th>Subdomain</th><th>Status</th></tr>
+                {% for status_line in http_statuses %}
+                    <tr>
+                        {% set parts = status_line.split(' - ') %}
+                        <td>{{ parts[0] }}</td>
+                        <td>{{ parts[1] if parts|length > 1 else "N/A" }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No HTTP status data found.</p>
+        {% endif %}
+    </div>    
+
+    <div class="section">
+        <h2>📜 JavaScript Subdomains</h2>
+        {% if js_subdomains %}
+            <ul>
+                {% for sub in js_subdomains %}
+                     <li>{{ sub }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No JavaScript subdomains found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>📁 Wayback Machine Subdomains</h2>
+        {% if wayback_subdomains %}
+            <ul>
+                {% for sub in wayback_subdomains[:5] %}
+                    <li>{{ sub }}</li>
+                {% endfor %}
+            </ul>
+            {% if wayback_subdomains|length > 5 %}
+                <details>
+                    <summary>Show more...</summary>
+                    <ul>
+                        {% for sub in wayback_subdomains[5:] %}
+                            <li>{{ sub }}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+            {% endif %}
+        {% else %}
+            <p>No Wayback Machine subdomains found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>🚨 Potential Subdomain Takeovers</h2>
+        {% if takeover %}
+            <ul>
+                {% for line in takeover %}
+                    <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No takeover candidates found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>🔓 Port Scan Results</h2>
+        {% if portscan_results %}
+            <table>
+                <tr><th>Subdomain</th><th>Open Ports</th></tr>
+                {% for subdomain, ports in portscan_results.items() %}
+                    <tr>
+                        <td>{{ subdomain }}</td>
+                        <td>{{ ports | join(', ') if ports else "N/A" }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No port scan results found.</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h2>⚠️ Risk Scores</h2>
+        {% if risk_scores %}
+            <table>
+                <thead>
+                    <tr><th>Subdomain</th><th>Risk Score</th></tr>
+                </thead>
+                <tbody>
+                    {% for subdomain, score in risk_scores.items() %}
+                    <tr>
+                        <td>{{ subdomain }}</td>
+                        <td>
+                            {% if score >= 80 %}
+                                <span class="risk-high">{{ score }}</span>
+                            {% elif score >= 50 %}
+                                <span class="risk-medium">{{ score }}</span>
+                            {% else %}
+                                <span class="risk-low">{{ score }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No risk scores computed.</p>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/" class="button">➕ Start New Scan</a>
+    </div>
+</body>
+</html>
