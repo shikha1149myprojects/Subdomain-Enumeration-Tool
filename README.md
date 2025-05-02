@@ -20,6 +20,17 @@ This tool performs automated security analysis on discovered subdomains of a tar
 - **Subdomain Takeover Detection**: Identifies potential vulnerable subdomains that could be taken over.
 - **Port Scan Results**: Displays open ports found for each subdomain.
 - **Risk Scoring System**: Assigns a risk score to each subdomain based on gathered intelligence.
+  -  Each subdomain starts with a score of 0, and the score is adjusted based on the following factors:
+    
+    1. HTTP Status Check:
+       - 200 OK: +1 (active subdomain)
+       - 404 Not Found: -1 (possibly dead or misconfigured)
+    2. WAF Detection:
+       - If WAF is Cloudflare: -1 (less risky due to protection)
+    3. Subdomain Takeover Risk:
+       - If flagged as takeover-vulnerable: +2 (high-risk target)
+    4. Open Ports:
+       - +1 per open port on the subdomain (more exposed services = higher risk)
 
 # Installation
 
