@@ -2,9 +2,11 @@
 
 This tool performs automated security analysis on discovered subdomains of a target domain. It aggregates data from modules like port scanning, HTTP response checks, WAF detection, and subdomain takeover analysis to compute a risk score for each subdomain. The results are presented in a user-friendly web interface
 
+<div align="center">
 <img width="700" alt="Screenshot 2025-05-01 at 10 30 24 PM" src="https://github.com/user-attachments/assets/d59b5d71-9b22-4d9c-a4a3-c1e8f4bd4deb" />
 
 <img width="700" alt="Screenshot 2025-05-01 at 10 31 37 PM" src="https://github.com/user-attachments/assets/aef70b66-0532-418d-9ea8-de0607539e06" />
+</div>
 
 # Features
 
